@@ -381,8 +381,10 @@ class ClienteIoT:
             self._desconectar()
             return
         try:
-            ip     = self.ip_entry.get().strip()
+            host   = self.ip_entry.get().strip()
             puerto = int(self.port_entry.get().strip())
+
+            ip = socket.gethostbyname(host)
 
             self.sock    = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((ip, puerto))
@@ -396,7 +398,8 @@ class ClienteIoT:
                 bg=self.C["red_dark"],
                 activebackground=self.C["red_hover"],
             )
-            self._escribir_info(f"Conectado a {ip}:{puerto}")
+            sufijo = f" ({ip})" if ip != host else ""
+            self._escribir_info(f"Conectado a {host}:{puerto}{sufijo}")
 
         except Exception as e:
             messagebox.showerror("Error de conexión", str(e))
